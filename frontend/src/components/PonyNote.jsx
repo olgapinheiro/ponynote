@@ -4,28 +4,44 @@ import { connect } from 'react-redux';
 import { notes } from "../actions";
 
 class PonyNote extends Component {
-    state = {
-        text: "",
-        updateNoteId: null,
+    constructor() {
+        super();
+
+        this.componentDidMount = this.componentDidMount.bind(this);
+        this.resetForm = this.resetForm.bind(this);
+        this.selectForEdit = this.selectForEdit.bind(this);
+        this.submitNote = this.submitNote.bind(this);
+
+        this.state = {
+            text: "",
+            updateNoteId: null,
+        }
+    }
+
+
+    componentDidMount() {
+        console.log('enter componentDidMount');
+        this.props.fetchNotes();
     }
 
     resetForm = () => {
-        this.setState({text: "", updateNoteId: null});
+        this.setState({ text: "", updateNoteId: null });
     }
 
     selectForEdit = (id) => {
         let note = this.props.notes[id];
-        this.setState({text: note.text, updateNoteId: id});
+        this.setState({ text: note.text, updateNoteId: id });
     }
 
     submitNote = (e) => {
         e.preventDefault();
-        if (this.state.updateNoteId === null){
-        this.props.addNote(this.state.text);
+        if (this.state.updateNoteId === null) {
+            this.props.addNote(this.state.text)
+                .then(this.resetForm());
         } else {
-            this.props.updateNote(this.state.updateNoteId, this.state.text);
+            this.props.updateNote(this.state.updateNoteId, this.state.text)
+                .then(this.resetForm);
         }
-        this.resetForm();
     }
 
     render() {
@@ -71,14 +87,17 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         addNote: (text) => {
-            dispatch(notes.addNote(text));
+            return dispatch(notes.addNote(text));
         },
         updateNote: (id, text) => {
-            dispatch(notes.addNote(id, text));
+            return dispatch(notes.updateNote(id, text));
         },
         deleteNote: (id) => {
             dispatch(notes.deleteNote(id));
         },
+        fetchNotes: () => {
+            dispatch(notes.fetchNotes());
+        }
 
     }
 }

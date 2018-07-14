@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { Route, Switch, BrowserRouter } from 'react-router-dom';
 
 import { Provider } from "react-redux";
-import { createStore } from "redux";
 import ponyApp from "./reducers";
+import { createStore, applyMiddleware } from "redux";
+import thunk from 'redux-thunk'
 
 import PonyNote from "./components/PonyNote";
 import NotFound from "./components/NotFound";
@@ -11,7 +12,7 @@ import NotFound from "./components/NotFound";
 // import logo from './logo.svg';
 // import './App.css';
 
-let store = createStore(ponyApp);
+let store = createStore(ponyApp, applyMiddleware(thunk));
 
 class App extends Component {
   render() {
