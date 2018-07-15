@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { notes } from "../actions";
+import { notes, auth } from "../actions";
 
 class PonyNote extends Component {
     constructor() {
@@ -49,6 +49,9 @@ class PonyNote extends Component {
             <div>
                 <h2>Welcome to PonyNote!</h2>
                 <hr />
+                <div style={{textAlign: "right"}}>
+                    {this.props.user.username} (<a onClick={this.props.logout}>logout</a>)
+                </div>
 
                 <h3>Notes</h3>
                 <table>
@@ -81,6 +84,7 @@ class PonyNote extends Component {
 const mapStateToProps = state => {
     return {
         notes: state.notes,
+        user: state.auth.user,
     }
 }
 
@@ -97,7 +101,8 @@ const mapDispatchToProps = dispatch => {
         },
         fetchNotes: () => {
             dispatch(notes.fetchNotes());
-        }
+        },
+        logout: () => dispatch(auth.logout()),
 
     }
 }
